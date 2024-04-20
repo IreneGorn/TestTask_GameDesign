@@ -35,21 +35,26 @@ public class ThirdPersonMovement : MonoBehaviour
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
             _controller.Move(moveDir.normalized * _speed * Time.deltaTime);
             
-            _animator.SetBool("IsRunning", true);
+            if (!_animator.GetCurrentAnimatorStateInfo(0).IsName("Stop running")) // Проверяем, не проигрывается ли анимация окончания бега
+            {
+                _animator.SetBool("IsRunning", true); // Устанавливаем параметр IsRunning в true
+            }
         }
         else
         {
             _animator.SetBool("IsRunning", false);
         }
-
-        if (Input.GetKeyDown(KeyCode.W))
+        
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D))
         {
-            _animator.SetTrigger("StartRunning");
-        }
-
-        if (Input.GetKeyUp(KeyCode.W))
-        {
-            _animator.SetTrigger("StopRunning");
+            if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Stop running")) // Проверяем, проигрывается ли анимация окончания бега
+            {
+                _animator.Play("Start running"); // Запускаем анимацию начала бега
+            }
+            else
+            {
+                _animator.SetTrigger("StartRunTrigger"); // Устанавливаем триггер StartRunTrigger, когда нажата клавиша передвижения
+            }
         }
     }
 }
