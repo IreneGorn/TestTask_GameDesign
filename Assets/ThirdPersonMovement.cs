@@ -6,6 +6,8 @@ using UnityEngine.UIElements;
 
 public class ThirdPersonMovement : MonoBehaviour
 {
+    [SerializeField] private Animator _animator;
+    
     [SerializeField] private CharacterController _controller;
     
     [SerializeField] private float _speed = 6f;
@@ -32,6 +34,22 @@ public class ThirdPersonMovement : MonoBehaviour
 
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
             _controller.Move(moveDir.normalized * _speed * Time.deltaTime);
+            
+            _animator.SetBool("IsRunning", true);
+        }
+        else
+        {
+            _animator.SetBool("IsRunning", false);
+        }
+
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            _animator.SetTrigger("StartRunning");
+        }
+
+        if (Input.GetKeyUp(KeyCode.W))
+        {
+            _animator.SetTrigger("StopRunning");
         }
     }
 }
